@@ -11,12 +11,13 @@ namespace TRPGTest
         // 상태 보기 기능 구현
         public void ShowStatus(Player player)
         {
-            string input="";
+            string input = "";
             while (input != "0")
             {
                 Console.Clear();
                 Console.WriteLine($"LV: {player.LV}");
-                Console.WriteLine("Chad (전사)");
+                Console.WriteLine($"이름: {player.Name}");
+                Console.WriteLine($"직업 ({player.Job})");
                 Console.WriteLine($"공격력: {player.Attack}");
                 Console.WriteLine($"방여력: {player.Defense}");
                 Console.WriteLine($"체력: {player.HP}");

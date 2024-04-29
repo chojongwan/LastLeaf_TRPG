@@ -1,4 +1,6 @@
-﻿namespace TRPGTest
+﻿using System.Threading;
+
+namespace TRPGTest
 {
     public enum ItemType                // 열거형 (아이템 종류, 종류 구분으로 공격력 방어력을 구분)
     {
@@ -9,6 +11,8 @@
     {
         public int Gold { get; set; } = 800; // 초기 골드
         public int LV { get; set; } = 1;
+        public string Name { get; set; } = "";
+        public string Job { get; set; } = "";
         public int Attack { get; set; } = 5;
         public int Defense { get; set; } = 5;
         public int HP { get; set; } = 100;
@@ -16,6 +20,7 @@
         public List<Item> Inventory { get; } = new List<Item>(); // 인벤토리 리스트
 
     }
+
     public class Item          //프로퍼티
     {
         public string Name { get; set; } // 아이템 이름
@@ -39,12 +44,13 @@
 
     public class MainMinu
     {
-        Status showStatus= new Status();
-        Inventory inventory =new Inventory();
-        Shop shop =new Shop();
-        Dungeon dungeon =new Dungeon();
-        Rast rast =new Rast();
-        
+        Status showStatus = new Status();
+        Inventory inventory = new Inventory();
+        Shop shop = new Shop();
+        Dungeon dungeon = new Dungeon();
+        Rast rast = new Rast();
+
+
         public void ShowMainMenu()
         {
             string input = "";
@@ -94,11 +100,11 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                         dungeon.ShowDungeon(player);
                         break;
                     case "5":
-                        rast.Rest( player);
+                        rast.Rest(player);
                         break;
                     case "6":
                         Save Save = new Save();
-                        Save.SaveGameData( player);
+                        Save.SaveGameData(player);
                         break;
                     case "7":
                         Save saveInstance = new Save();
@@ -112,6 +118,7 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
             }
         }
         Player player = new Player(); // 플레이어 객체 생성
+
 
     }
 }
