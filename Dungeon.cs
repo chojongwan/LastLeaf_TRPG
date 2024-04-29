@@ -106,7 +106,7 @@ namespace TRPGTest
                 //Random rand = new Random();
                 monsterCount = rand.Next(1, 5); // 1~4 사이의 랜덤한 몬스터 수
 
-                Console.WriteLine("총 {0}마리의 몬스터가 등장했습니다.\n", monsters.Count);
+                Console.WriteLine("총 {0}마리의 몬스터가 등장했습니다.\n", monsterCount);
 
                 // 랜덤 몬스터 생성
                 for (int i = 0; i < monsterCount; i++)
@@ -189,6 +189,7 @@ namespace TRPGTest
 
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[monsterIndex].MonsterName);
                 Console.ReadKey();
+                StartBattle(player);
                 // 모든 몬스터가 죽었는지 확인
                 bool allMonstersDead = true;
                 foreach (var monster in monsters)
@@ -240,6 +241,7 @@ namespace TRPGTest
         // 플레이어의 방어력을 몬스터의 공격력에서 빼서 데미지를 계산하고, 음수가 되면 데미지가 없도록 설정
         public void EnemyPhase(Player player, List<Monster> monsters)
         {
+            Console.Clear();
             Console.WriteLine("\nEnemy Phase 시작\n");
 
             // 모든 몬스터가 죽은지 확인
@@ -300,8 +302,8 @@ namespace TRPGTest
                 }
 
                 // 다음 행동 선택
-                Console.WriteLine("등을 보여 공격당했습니다.");
                 Console.WriteLine("0. 도망치기");
+                Console.WriteLine("1. 진행하기");
                 string input = Console.ReadLine();
                 if (input == "0")
                 {
@@ -310,7 +312,7 @@ namespace TRPGTest
                 }
                 else
                 {
-                    Console.WriteLine("잘못된 입력입니다.");
+                    StartBattle(player);
                     Console.ReadKey();
                 }
             }
