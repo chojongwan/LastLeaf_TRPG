@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,185 +13,110 @@ namespace TRPGTest
             string input = "";
             while (input != "0")
             {
-               input = "";
+                input = "";
 
                 Console.Clear();
-                if (player.HP < 0)      //HP가 0이될때 게임 오버 구문
+                if (player.HP <= 0) // HP가 0이하인 경우 게임 오버
                 {
                     GameOver(player);
+                    break;
                 }
                 Console.WriteLine("던전");
                 Console.WriteLine("전투로 골드를 얻을 수 있는 던전입니다.\n");
                 Console.WriteLine("요구능력치 : 방어력, 공격력 : 전리품 증가");
                 Console.WriteLine($"[현재 HP] {player.HP} \n");
                 Console.WriteLine($"[현재 Gold] {player.Gold}G \n");
-                Console.WriteLine("[던전 목록]");
+                Console.WriteLine("1. 전투 시작");
                 Console.WriteLine("0. 나가기");
-                Console.WriteLine("1. 쉬움 [요구 능력치 15]");
-                Console.WriteLine("2. 보통 [요구 능력치 30]");
-                Console.WriteLine("3. 어려움 [요구 능력치 60]");
                 input = Console.ReadLine();
                 if (input == "1")
-                    Dungeon1(player);
-                else if (input == "2")
-                    Dungeon2(player);
-                else if (input == "3")
-                    Dungeon3(player);
+                    StartBattle(player); // 전투 시작
                 else
-                {
                     Console.WriteLine("잘못된 입력입니다.");
-                    //ShowDungeon(player);
-                }
             }
         }
-        //쉬움
-        public void Dungeon1(Player player)
-        {
-            
-            bool clear = ClearDungeon(15, player.Defense); // 쉬운 던전의 권장 방어력은 15입니다.
-            if (clear)
-            {
-                int baseReward = 1000; // 쉬운 던전의 기본 클리어 보상
-                int reward = Compensation(baseReward, player.Attack);
-                player.Gold += reward;
-                Console.WriteLine($"던전을 클리어했습니다! 보상으로 {reward} G를 획득하였습니다.");
-                
-                player.DungeonClearCount++;
-                if ((player.DungeonClearCount/2) >player.LV)
-                {
-                    player.LV++;
-                    player.Attack += 1; // 공격력 증가
-                    player.Defense += 2; // 방어력 증가
-                    Console.WriteLine($"레벨이 올랐습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
-                }
-                else
-                {
-                    Console.WriteLine($"던전을 클리어하였습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
-                }
-            }
-            else
-            {
-                Random rand = new Random();
-                int hpLoss = rand.Next(20, 36) / 2; // 기본 체력 감소량은 20 ~ 35입니다.
-                player.HP -= hpLoss;
-                Console.WriteLine($"던전 클리어에 실패했습니다. 체력이 {hpLoss}만큼 감소하였습니다.");
-            }
-            Console.WriteLine("아무키나 눌러 던전으로 돌아가기");
-            string input = Console.ReadLine();
-            Console.ReadKey();
 
-
-        }
-        //보통
-        public void Dungeon2(Player player)
+        // 전투 시작
+        public void StartBattle(Player player)
         {
-            bool clear = ClearDungeon(30, player.Defense); // 보통 던전의 권장 방어력은 30입니다.
-            if (clear)
-            {
-                int baseReward = 2000; // 보통 던전의 기본 클리어 보상
-                int reward = Compensation(baseReward, player.Attack);
-                player.Gold += reward;
-                Console.WriteLine($"던전을 클리어했습니다! 보상으로 {reward} G를 획득하였습니다.");
-                player.DungeonClearCount++;
-                if ((player.DungeonClearCount / 3) > player.LV)
-                {
-                    player.LV++;
-                    player.Attack += 1; // 공격력 증가
-                    player.Defense += 2; // 방어력 증가
-                    Console.WriteLine($"레벨이 올랐습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
-                }
-                else
-                {
-                    Console.WriteLine($"던전을 클리어하였습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
-                }
-            }
-            else
-            {
-                Random rand = new Random();
-                int hpLoss = rand.Next(20, 36) / 2; // 기본 체력 감소량은 20 ~ 35입니다.
-                player.HP -= hpLoss;
-                Console.WriteLine($"던전 클리어에 실패했습니다. 체력이 {hpLoss}만큼 감소하였습니다.");
-            }
-            Console.WriteLine("아무키나 눌러 던전으로 돌아가기");
-            string input = Console.ReadLine();
-            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine("**Battle!!**");
 
-        }
-        //하드
-        public void Dungeon3(Player player)
-        {
-            bool clear = ClearDungeon(60, player.Defense); // 어려움 던전의 권장 방어력은 60.
-            if (clear)
+            // 몬스터 랜덤 등장 (1~4마리)
+            Random rand = new Random();
+            int monsterCount = rand.Next(1, 5); // 1~4 사이의 랜덤한 몬스터 수
+            List<Monster> monsters = new List<Monster>();
+
+            Console.WriteLine("총 {0}마리의 몬스터가 등장했습니다.\n", monsterCount);
+
+            // 랜덤 몬스터 생성
+            for (int i = 0; i < monsterCount; i++)
             {
-                int baseReward = 5000; // 어려움 던전의 기본 클리어 보상
-                int reward = Compensation(baseReward, player.Attack);
-                player.Gold += reward;
-                Console.WriteLine($"던전을 클리어했습니다! 보상으로 {reward} G를 획득하였습니다.");
-                player.DungeonClearCount++;
-                if ((player.DungeonClearCount / 6) > player.LV)
-                {
-                    player.LV++;
-                    player.Attack += 1; // 공격력 증가
-                    player.Defense += 2; // 방어력 증가
-                    Console.WriteLine($"레벨이 올랐습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
-                }
-                else
-                {
-                    Console.WriteLine($"던전을 클리어하였습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
-                }
+                monsters.Add(CreateRandomMonster());
             }
-            else
+
+            // 플레이어 정보 출력
+            Console.WriteLine("[내정보]");
+            Console.WriteLine("Lv.{0} {1} ({2})", player.LV, player.Name, player.Job);
+            Console.WriteLine("HP: {0}/{1}\n", player.HP, player.MaxHP);
+
+            // 몬스터 정보 출력
+            Console.WriteLine("[몬스터]");
+            for (int i = 0; i < monsters.Count; i++)
             {
-                Random rand = new Random();
-                int hpLoss = rand.Next(40, 56) / 2; // 기본 체력 감소량은 40 ~ 55입니다.
-                player.HP -= hpLoss;
-                Console.WriteLine($"던전 클리어에 실패했습니다. 체력이 {hpLoss}만큼 감소하였습니다.");
+                Console.WriteLine("{0}. Lv.{1} {2}  HP {3}", i + 1, monsters[i].Level, monsters[i].Name, monsters[i].HP);
             }
-            Console.WriteLine("아무키나 눌러 던전으로 돌아가기");
-            string input = Console.ReadLine();
-            Console.ReadKey();
+
+            Console.WriteLine("\n원하시는 행동을 입력해주세요.");
+
+            // TODO: 전투 진행 로직 구현
         }
-        public int Compensation(int baseReward, int attack)
+
+        // 랜덤 몬스터 생성 메서드
+        public Monster CreateRandomMonster()
         {
             Random rand = new Random();
-            int attackreward = rand.Next(attack, attack * 2 + 1); // 공격력 * 1 ~ 2의 범위에서 %
-            return baseReward + attackreward;
-        }
-        //클리어, 실패 판별
-        public bool ClearDungeon(int capability, int defense)
-        {
-            if (defense < capability)
+            int level = rand.Next(2, 6); // 랜덤한 레벨 (2~5)
+            string name = "";
+            int hp = 0;
+            int atk = 0;
+
+            switch (level)
             {
-                Random rand = new Random();
-                return rand.Next(1, 101) > 40; // 40%의 확률로 실패
+                case 2:
+                    name = "미니언";
+                    hp = rand.Next(10, 21); // 10~20 사이의 랜덤한 체력
+                    atk = rand.Next(3, 7); // 3~6 사이의 랜덤한 공격력
+                    break;
+                case 3:
+                    name = "공허충";
+                    hp = rand.Next(8, 16); // 8~15 사이의 랜덤한 체력
+                    atk = rand.Next(6, 10); // 6~9 사이의 랜덤한 공격력
+                    break;
+                case 4:
+                    name = "대포미니언";
+                    hp = rand.Next(20, 31); // 20~30 사이의 랜덤한 체력
+                    atk = rand.Next(7, 12); // 7~11 사이의 랜덤한 공격력
+                    break;
+                case 5:
+                    name = "킹크랩";
+                    hp = rand.Next(25, 36); // 25~35 사이의 랜덤한 체력
+                    atk = rand.Next(10, 16); // 10~15 사이의 랜덤한 공격력
+                    break;
             }
-            return true; // 클리어 가능
+
+            return new Monster(name, level, hp, atk);
         }
-        //게임 오버기능
+
+        // 게임 오버 메서드
         public void GameOver(Player player)
         {
-            player.HP = 0;
-            Console.WriteLine(@"  /$$$$$$                                           /$$$$$$                                      /$$       /$$
- /$$__  $$                                         /$$__  $$                                    | $$      | $$
-| $$  \__/  /$$$$$$  /$$$$$$/$$$$   /$$$$$$       | $$  \ $$ /$$    /$$ /$$$$$$   /$$$$$$       | $$      | $$
-| $$ /$$$$ |____  $$| $$_  $$_  $$ /$$__  $$      | $$  | $$|  $$  /$$//$$__  $$ /$$__  $$      | $$      | $$
-| $$|_  $$  /$$$$$$$| $$ \ $$ \ $$| $$$$$$$$      | $$  | $$ \  $$/$$/| $$$$$$$$| $$  \__/      |__/      |__/
-| $$  \ $$ /$$__  $$| $$ | $$ | $$| $$_____/      | $$  | $$  \  $$$/ | $$_____/| $$                          
-|  $$$$$$/|  $$$$$$$| $$ | $$ | $$|  $$$$$$$      |  $$$$$$/   \  $/  |  $$$$$$$| $$             /$$       /$$
- \______/  \_______/|__/ |__/ |__/ \_______/       \______/     \_/    \_______/|__/            |__/      |__/
-                                                                                                              
-                                                                                                              
-                                                                                                              ");
-
-            Console.WriteLine("게임 오버!!! 체력이 0이 되었습니다");
-            Console.WriteLine("죽어서 모든 돈을 잃어버렸습니다....");
-            Console.WriteLine();
-            player.HP = 100;
+            Console.WriteLine("게임 오버! 체력이 0이 되었습니다.");
+            Console.WriteLine("모든 돈을 잃어버렸습니다...");
             player.Gold = 0;
-            string re = Console.ReadLine();
-            Console.WriteLine("아무키나 눌러 던전으로 돌아가기");
-            string input = Console.ReadLine();
-            Console.Clear();
+            player.HP = player.MaxHP; // 체력 초기화
+            Console.WriteLine("아무 키나 눌러 던전으로 돌아가기");
+            Console.ReadKey();
         }
     }
 }
