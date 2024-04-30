@@ -188,6 +188,14 @@ namespace TRPGTest
                 monsters[monsterIndex].MonsterDie = true;
 
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[monsterIndex].MonsterName);
+                player.DungeonClearCount++;
+                if ((player.DungeonClearCount / 6) > player.LV)
+                {
+                    player.LV++;
+                    player.Attack += 1; // 공격력 증가
+                    player.Defense += 2; // 방어력 증가
+                    Console.WriteLine($"레벨이 올랐습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
+                }
                 Console.ReadKey();
                 StartBattle(player);
                 // 모든 몬스터가 죽었는지 확인
