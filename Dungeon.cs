@@ -125,10 +125,12 @@ namespace TRPGTest
             for (int i = 0; i < monsterCount; i++)
             {
                 Console.WriteLine("{0}. Lv.{1} {2}  HP {3}", i + 1, monsters[i].MonsterLV, monsters[i].MonsterName, monsters[i].MonsterHP);
+               // if (monsters[i].MonsterHP >)
             }
 
             Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             Console.WriteLine("1. 공격");
+            Console.WriteLine("2. 다음 전투하기");
             Console.WriteLine("0. 도망치기");
             string input = Console.ReadLine();
 
@@ -136,6 +138,19 @@ namespace TRPGTest
             if (input == "1")
             {
                 AttackMonster(player, monsters);
+            }
+            else if (input == "2")
+            {
+                if (monsterCount == 0)
+                {
+                    EnemyPhase(player, monsters);
+                }
+                else
+                {
+                    Console.WriteLine("모든 몬스터를 처리하지 않았습니다!");
+                    Console.Read();
+                    StartBattle(player);
+                }
             }
             else if (input == "0")
             {
@@ -220,8 +235,6 @@ namespace TRPGTest
                     Console.WriteLine();
                     Console.WriteLine("0. 던전에서 나가시겠습니까?");
                     string input = Console.ReadLine();
-                    monsterCount = 0;
-                    monsters.Clear();
                     if (input == "1")
                     {
                         StartBattle(player);
@@ -230,7 +243,8 @@ namespace TRPGTest
                     {
                         ShowDungeon(player);
                     }
-
+                    monsterCount = 0;
+                    monsters.Clear();
                 }
             }
             else
