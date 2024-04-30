@@ -103,7 +103,6 @@ namespace TRPGTest
             if (monsters.Count == 0)
             {
                 // 몬스터 랜덤 등장 (1~4마리)
-                //Random rand = new Random();
                 monsterCount = rand.Next(1, 5); // 1~4 사이의 랜덤한 몬스터 수
 
                 Console.WriteLine("총 {0}마리의 몬스터가 등장했습니다.\n", monsterCount);
@@ -197,7 +196,6 @@ namespace TRPGTest
             Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, damage);
             Console.ReadKey();
             // 몬스터가 죽은 경우
-            
             if (monsters[monsterIndex].MonsterHP <= 0)
             {
                 monsters[monsterIndex].MonsterHP = 0; // HP가 0 아래로 내려가지 않도록 보정
