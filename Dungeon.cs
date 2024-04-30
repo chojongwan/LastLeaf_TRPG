@@ -182,6 +182,7 @@ namespace TRPGTest
             Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, damage);
             Console.ReadKey();
             // 몬스터가 죽은 경우
+            
             if (monsters[monsterIndex].MonsterHP <= 0)
             {
                 monsters[monsterIndex].MonsterHP = 0; // HP가 0 아래로 내려가지 않도록 보정
@@ -189,7 +190,7 @@ namespace TRPGTest
 
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[monsterIndex].MonsterName);
                 player.DungeonClearCount++;
-                if ((player.DungeonClearCount / 6) > player.LV)
+                if ((player.DungeonClearCount / 4) >= player.LV)
                 {
                     player.LV++;
                     player.Attack += 1; // 공격력 증가
