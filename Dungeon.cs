@@ -358,22 +358,25 @@ namespace TRPGTest
             // 선택한 몬스터 인덱스 계산 (0부터 시작하는 인덱스로 변환)
             int monsterIndex = targetIndex - 1;
 
-            // 선택한 몬스터가 이미 죽은 경우
-            if (monsters[monsterIndex].MonsterDie)
+            // 몬스터 공격 if문으로 치명타를 설정가능
+            int criticalprobability = rand.Next(1, 11);//치명타 확률
+            if (criticalprobability > 7)
             {
-                Console.WriteLine("이미 죽은 몬스터를 공격할 수 없습니다.");
+                Console.WriteLine("치명타 발동!");
+                int criticaldamage = CriticalHit(player.Attack);
+                monsters[monsterIndex].MonsterHP -= criticaldamage;
+                Console.WriteLine("\nChad 의 공격!");// 공격 결과 출력
+                Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, criticaldamage);
                 Console.ReadKey();
-                return;
             }
-
-            // 몬스터 공격
-            int damage = CalculateDamage(player.Attack);
-            monsters[monsterIndex].MonsterHP -= damage;
-
-            // 공격 결과 출력
-            Console.WriteLine("\nChad 의 공격!");
-            Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, damage);
-            Console.ReadKey();
+            else
+            {
+                int damage = CalculateDamage(player.Attack);
+                monsters[monsterIndex].MonsterHP -= damage;
+                Console.WriteLine("\nChad 의 공격!");// 공격 결과 출력
+                Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, damage);
+                Console.ReadKey();
+            }
             // 몬스터가 죽은 경우
             if (monsters[monsterIndex].MonsterHP <= 0)
             {
@@ -429,6 +432,24 @@ namespace TRPGTest
             double error = rand.NextDouble() * 0.2 - 0.1; // -0.1부터 0.1까지의 오차
             int finalDamage = (int)Math.Ceiling(attack * (1 + error)); // 최종 공격력 계산 (오차 적용)
             return finalDamage;
+        }
+        //치명타 공격 메서드
+        public int CriticalHit(int attack)
+        {
+            int critical = new Random().Next(1, 100);
+            int criticaldamage = 0;
+            bool isCritical = false;
+            if (critical >= 15)
+            {
+                isCritical = true;
+                double newCriticalattack = attack * 1.6;
+                criticaldamage = (int)Math.Round(newCriticalattack);
+            }
+            else
+            {
+                isCritical = false;
+            }
+            return criticaldamage;
         }
         // 적 몬스터 공격 페이즈
         // 플레이어의 방어력을 몬스터의 공격력에서 빼서 데미지를 계산하고, 음수가 되면 데미지가 없도록 설정
