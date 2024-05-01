@@ -186,8 +186,14 @@
                 }
 
                 // 몬스터 공격
-                int damage = CalculateDamage(player.Attack);
-                monsters[monsterIndex].MonsterHP -= damage;
+                int faitalodds = rand.Next(1, 11);//치명타 확률
+                if(faitalodds > 3)
+                {
+                    Console.WriteLine("치명타 공격!");
+                    iscriticaldamage = CriticalHit(player.Attack);
+                    monster[monsterIndex].MonsterHp -= criticaldamage;
+                    Console.WriteLine("\tChad 의 공격!");
+                }
                 
 
                 // 공격 결과 출력
@@ -248,11 +254,23 @@
                 }
             }
 
+            // 공격력 계산 메서드 (10% 오차 적용)
+            public int CalculateDamage(int attack)
+            {
+                Random rand = new Random();
+                double error = rand.NextDouble() * 0.2 - 0.1; // -0.1부터 0.1까지의 오차
+                int finalDamage = (int)Math.Ceiling(attack * (1 + error)); // 최종 공격력 계산 (오차 적용)
+                return finalDamage;
+            }
 
-        static void CriticalHit(int attack, ref bool isCritical, int damage)
+            // 치명타 공격 메서드
+            public int CriticalHit(int attack)
             {
                 int critical = new Random().Next(1, 100);
+                float damage = 0;
+                bool criticalHit = false;
                 if (critical <= 15)
+
                 {
                     isCritical = true;
                     double newCriticalattack = damage * 1.6;
@@ -262,17 +280,8 @@
                 {
                     isCritical = false;
                 }
+                int criticaldamage
                 return damage;
-            }
-
-
-            // 공격력 계산 메서드 (10% 오차 적용)
-            public int CalculateDamage(int attack)
-            {
-                Random rand = new Random();
-                double error = rand.NextDouble() * 0.2 - 0.1; // -0.1부터 0.1까지의 오차
-                int finalDamage = (int)Math.Ceiling(attack * (1 + error)); // 최종 공격력 계산 (오차 적용)
-                return finalDamage;
             }
             // 적 몬스터 공격 페이즈
             // 플레이어의 방어력을 몬스터의 공격력에서 빼서 데미지를 계산하고, 음수가 되면 데미지가 없도록 설정
@@ -298,9 +307,119 @@
 
                     // 기존에 존재했던 몬스터들을 전부 제거
                     monsters.Clear();
+<<<<<<< HEAD
 
                     // 다시 몬스터 스폰
                     StartBattle(player);
+=======
+                }
+            }
+            else
+            {
+                // 전투 다음 페이즈 진행
+                EnemyPhase(player, monsters);
+            }
+        }
+        // 공격력 계산 메서드 (10% 오차 적용)
+        public int CalculateDamage(int attack)
+        {
+            Random rand = new Random();
+            double error = rand.NextDouble() * 0.2 - 0.1; // -0.1부터 0.1까지의 오차
+            int finalDamage = (int)Math.Ceiling(attack * (1 + error)); // 최종 공격력 계산 (오차 적용)
+            return finalDamage;
+        }
+        // 치명타 공격 메서드
+        public int CriticalHit(int attack)
+        {
+            int critical = new Random().Next(1, 100);
+            float damage = 0;
+            bool isCritical = false;
+           if (critical <= 15)
+
+           {
+                isCritical = true;
+                double newCriticalattack = damage * 1.6;
+                damage = (int)Math.Round(newCriticalattack);
+            }
+            else
+            {
+                isCritical = false;
+            }
+            int criticaldamage = (int)damage;
+            return criticaldamage;
+        // 적 몬스터 공격 페이즈
+        // 플레이어의 방어력을 몬스터의 공격력에서 빼서 데미지를 계산하고, 음수가 되면 데미지가 없도록 설정
+        public void EnemyPhase(Player player, List<Monster> monsters)
+        {
+            Console.Clear();
+            Console.WriteLine("\nEnemy Phase 시작\n");
+
+            // 모든 몬스터가 죽은지 확인
+            bool allMonstersDead = true;
+            foreach (var monster in monsters)
+            {
+                if (!monster.MonsterDie)
+                {
+                    allMonstersDead = false;
+                    break;
+                }
+            }
+
+            if (allMonstersDead)
+            {
+                // 몬스터 카운트 초기화
+                monsterCount = 0;
+
+                // 기존에 존재했던 몬스터들을 전부 제거
+                monsters.Clear();
+
+                // 다시 몬스터 스폰
+                StartBattle(player);
+            }
+            else
+            {
+                // 살아있는 몬스터에 대해 공격 수행
+                foreach (var monster in monsters)
+                {
+                    if (!monster.MonsterDie)
+                    {
+                        // 몬스터 공격력 계산
+                        int damage = CalculateDamage(monster.AttackMonster);
+
+                        // 플레이어 방어력을 고려하여 데미지 계산
+                        damage -= player.Defense;
+                        if (damage < 0)
+                        {
+                            damage = 0; // 음수인 경우 데미지가 없도록 설정
+                        }
+
+                        // 플레이어 체력 감소
+                        player.HP -= damage;
+
+                        // 공격 결과 출력
+                        Console.WriteLine("{0}의 공격!", monster.MonsterName);
+                        Console.WriteLine("Chad을(를) 공격하여 {0}만큼의 데미지를 입혔습니다.", damage);
+                        Console.WriteLine("Chad의 체력: {0}/{1}\n", player.HP, 100);
+
+                        // 플레이어가 죽은 경우
+                        if (player.HP <= 0)
+                        {
+                            Console.WriteLine("플레이어가 사망했습니다. 게임 오버!");
+                            GameOver(player);
+                            return;
+                        }
+                    }
+                }
+
+                // 다음 행동 선택
+                Console.WriteLine("0. 도망치기");
+                Console.WriteLine("1. 진행하기");
+                string input = Console.ReadLine();
+                if (input == "0")
+                {
+                    // 플레이어의 차례로 돌아가기
+                    //ShowDungeon(player);
+>>>>>>> parent of 0b5dbb2 (Update Dungeon.cs)
                 }
                 else
                 {
