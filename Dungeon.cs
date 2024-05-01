@@ -449,7 +449,8 @@ namespace TRPGTest
             {
                 isCritical = false;
             }
-            return criticaldamage;
+            int itcriticaldamage = (int)criticaldamage;
+            return itcriticaldamage;
         }
         // 적 몬스터 공격 페이즈
         // 플레이어의 방어력을 몬스터의 공격력에서 빼서 데미지를 계산하고, 음수가 되면 데미지가 없도록 설정
