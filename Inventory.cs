@@ -19,12 +19,13 @@ namespace TRPGTest
             while (input != "0")
             {
                 Console.Clear();
-                Console.WriteLine("인벤토리");
-                Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.\n");
+                Console.WriteLine("장비 인벤토리");
+                Console.WriteLine("보유 중인 장비를 관리할 수 있습니다.\n");
 
                 if (player.Inventory.Count == 0)  // Inventory 아이템 리스트가 비어있을 때
                 {
-                    Console.WriteLine("보유 중인 아이템이 없습니다.");
+                    Console.WriteLine("보유 중인 장비가 없습니다.");
+                    Console.WriteLine("-. 소모품 가방");
                     Console.WriteLine("0. 나가기\n");
 
                     while (input != "0")
@@ -32,7 +33,12 @@ namespace TRPGTest
                         Console.Write("원하시는 행동을 입력해 주세요.\n>> ");
                         input = Console.ReadLine();
 
-                        if (input != "0")
+                        if (input == "-" || input == "_")
+                        {
+                            ShowBackpack(player);  // 소모품 인벤토리 호출
+                            ShowInventory(player);
+                        }
+                        else if (input != "0")
                         {
                             Console.WriteLine("잘못된 입력입니다.");
                         }
@@ -40,7 +46,7 @@ namespace TRPGTest
                 }
                 else  // Inventory 에 아이템이 있을 때
                 {
-                    Console.WriteLine("[아이템 목록]");
+                    Console.WriteLine("[장비 목록]");
                     for (int i = 0; i < player.Inventory.Count; i++)
                     {
                         string equipped = player.Inventory[i].IsEquipped ? "[E]" : "";                  // 아이템이 장착되었는지 확인하여 표시, 삼항 연산자-> equipped
@@ -48,6 +54,7 @@ namespace TRPGTest
                     }
                     Console.WriteLine();
                     Console.WriteLine("장착 상태를 변경할 장비의 번호를 입력해주세요.");
+                    Console.WriteLine("-. 소모품 가방\n");
                     Console.WriteLine("0. 나가기\n");
 
                     while (input != "0")
@@ -55,7 +62,12 @@ namespace TRPGTest
                         Console.Write("원하시는 행동을 입력해 주세요.\n>> ");
                         input = Console.ReadLine();
 
-                        if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= player.Inventory.Count)        //selectedIndex 인벤토리에서 해당 아이템을 찾을때 사용 (out 인자를 사용)
+                        if (input == "-" || input == "_")
+                        {
+                            ShowBackpack(player);  // 소모품 인벤토리 호출
+                            ShowInventory(player);
+                        }
+                        else if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= player.Inventory.Count)        //selectedIndex 인벤토리에서 해당 아이템을 찾을때 사용 (out 인자를 사용)
                         {
                             selectedIndex -= 1;  // -1 을 해서 배열 정렬
 
@@ -105,7 +117,7 @@ namespace TRPGTest
                 // 이미 2개의 아이템을 장착했는지 확인
                 if (equippedItemCount >= 2)
                 {
-                    Console.WriteLine("더 이상 아이템을 장착할 수 없습니다.");
+                    Console.WriteLine("더 이상 장비를 장착할 수 없습니다.");
                 }
                 else
                 {
@@ -141,6 +153,96 @@ namespace TRPGTest
                 case ItemType.Armor:
                     player.Defense -= GetEffectValue(selected.Effect);
                     break;
+            }
+        }
+
+
+        // 소모품 인벤토리
+        public void ShowBackpack(Player player)
+        {
+            input = "";
+            while (input != "0")
+            {
+                Console.Clear();
+                Console.WriteLine("소모품 가방");
+                Console.WriteLine("보유 중인 소모품을 사용할 수 있습니다.\n");
+
+                if (player.Backpack.Count == 0)  // Backpack 아이템 리스트가 비어있을 때
+                {
+                    Console.WriteLine("보유 중인 소모품이 없습니다.");
+                    Console.WriteLine("0. 나가기\n");
+
+                    while (input != "0")
+                    {
+                        Console.Write("원하시는 행동을 입력해 주세요.\n>> ");
+                        input = Console.ReadLine();
+
+                        if (input != "0")
+                        {
+                            Console.WriteLine("잘못된 입력입니다.");
+                        }
+                    }
+                }
+                else  // Backpack 에 아이템이 있을 때
+                {
+                    Console.WriteLine("[소모품 목록]");
+                    for (int i = 0; i < player.Backpack.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {player.Backpack[i].Name} | 보유 {player.Backpack[i].Amount}개");
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("사용할 소모품의 번호를 입력해주세요.");
+                    Console.WriteLine("0. 나가기\n");
+
+                    while (input != "0")
+                    {
+                        Console.Write("원하시는 행동을 입력해 주세요.\n>> ");
+                        input = Console.ReadLine();
+
+                        if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= player.Backpack.Count)        //selectedIndex 인벤토리에서 해당 아이템을 찾을때 사용 (out 인자를 사용)
+                        {
+                            selectedIndex -= 1;  // -1 을 해서 배열 정렬
+
+                            Item selected = player.Backpack[selectedIndex];
+
+                            UseItem(selected, player);  // 아이템 사용
+                            Console.WriteLine($"{selected.Name}을(를) 사용했습니다. 아무 키나 누르시면 새로고침됩니다.");
+                            Console.ReadKey();
+                            ShowBackpack(player);
+                        }
+                        else if (input != "0")
+                        {
+                            Console.WriteLine("잘못된 입력입니다.");
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // 소모품 사용
+        public void UseItem(Item selected, Player player)
+        {
+            switch (selected.Type)
+            {
+                case ItemType.HPPotion:
+                    if (player.HP + GetEffectValue(selected.Effect) > 100)  // 회복 이후 체력이 최대 체력보다 높다면
+                    {
+                        Console.WriteLine($"체력: {player.HP} -> 100");  // 최대 체력으로 설정
+                        player.HP = 100;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"체력: {player.HP} -> {player.HP + GetEffectValue(selected.Effect)}");
+                        player.HP += GetEffectValue(selected.Effect);
+                    }
+                    break;
+            }
+
+            selected.Amount -= 1;
+            if (selected.Amount <= 0)
+            {
+                player.Backpack.Remove(selected);
             }
         }
 

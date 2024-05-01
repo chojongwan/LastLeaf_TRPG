@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace TRPGTest
 {
-    internal class Rast
+    internal class Rest
     {
-        public void Rest(Player player)
+        public void GoRest(Player player)
         {
             Console.Clear();
             Console.WriteLine($"휴식하기");

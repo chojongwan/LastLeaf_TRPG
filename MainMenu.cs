@@ -5,8 +5,10 @@ namespace TRPGTest
     public enum ItemType                // 열거형 (아이템 종류, 종류 구분으로 공격력 방어력을 구분)
     {
         Weapon,
-        Armor
+        Armor,
+        HPPotion
     }
+
     public class Player
     {
         public int Gold { get; set; } = 800; // 초기 골드
@@ -16,21 +18,21 @@ namespace TRPGTest
         public int Attack { get; set; } = 5;
         public int Defense { get; set; } = 5;
         public int HP { get; set; } = 100;
-        public int DungeonClearCount { get; set; } = 0;     //던전클리어 카운트에 따른 레벨 변화
-        public List<Item> Inventory { get; } = new List<Item>(); // 인벤토리 리스트
-
+        public int DungeonClearCount { get; set; } = 0;     // 던전 클리어 카운트에 따른 레벨 변화
+        public List<Item> Inventory { get; } = new List<Item>(); // 장비 인벤토리 리스트
+        public List<Item> Backpack { get; } = new List<Item>(); // 소모품 인벤토리 리스트
     }
 
-    public class Item          //프로퍼티
+    public class Item          // 프로퍼티
     {
         public string Name { get; set; } // 아이템 이름
         public string Effect { get; set; } // 아이템 효과
         public string Description { get; set; } // 아이템 설명
         public int Price { get; set; } // 아이템 가격
-        public bool IsPurchased { get; set; } = false; // 아이템 구매 여부
         public ItemType Type { get; set; } // 아이템 종류
-        public bool IsEquipped { get; set; } //아이템 장착 여부
-
+        public bool IsPurchased { get; set; } = false; // 아이템 구매 여부
+        public bool IsEquipped { get; set; } // 아이템 장착 여부
+        public int Amount { get; set; } = 0; // 소모품 소지 개수
 
         public Item(string name, string effect, string description, int price, ItemType type)
         {
@@ -42,17 +44,87 @@ namespace TRPGTest
         }
     }
 
-    public class MainMinu
+
+    public class MainMenu
     {
+        // 회복 아이템 추가
+        static Item[] potionItems = new Item[]
+        {
+        new Item("체력 30 회복 포션", "HP +30", "체력을 30만큼 회복시키는 포션입니다. (최대 HP 초과로는 회복되지 않습니다.)", 250, ItemType.HPPotion)
+        };
+
         Status showStatus = new Status();
         Inventory inventory = new Inventory();
         Shop shop = new Shop();
         Dungeon dungeon = new Dungeon();
-        Rast rast = new Rast();
+        Rest rest = new Rest();
+        Player player = new Player();   // 플레이어 객체 생성
 
+        public void CreatePlayer()  // 사용자 이름 설정하기
+        {
+            Console.Clear();
+            Console.WriteLine("환영합니다! 캐릭터를 생성해주세요.");
+            Console.WriteLine("캐릭터 이름을 입력해주세요.");
+            Console.Write("> ");
+            string playerName = Console.ReadLine();
+            while (playerName == "")
+            {
+                Console.Write("이름은 비워둘 수 없습니다. 다시 입력해주세요.\n> ");
+                playerName = Console.ReadLine();
+            }
+            Console.WriteLine($"환영합니다, {playerName} 님!");
+            player.Name = playerName;
+
+            string job = chooseJob();
+            player.Job = job;
+        }
+
+        public string chooseJob()   //직업 선택하기
+        {
+            string input = "";
+            string selectedJob = "";
+
+            Console.Clear();
+            Console.WriteLine("직업을 선택해주세요.\n");
+            Console.WriteLine("1. 전사");
+            Console.WriteLine("2. 궁수");
+            Console.WriteLine("3. 마법사\n");
+
+            while (input != "1" && input != "2" && input != "3")
+            {
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write("> ");
+
+                input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        Console.WriteLine("전사를 선택하셨습니다.");
+                        selectedJob = "전사";
+                        break;
+                    case "2":
+                        Console.WriteLine("궁수를 선택하셨습니다.");
+                        selectedJob = "궁수";
+                        break;
+                    case "3":
+                        Console.WriteLine("마법사를 선택하셨습니다.");
+                        selectedJob = "마법사";
+                        break;
+                    default:
+                        Console.WriteLine("잘못된 입력입니다.");
+                        break;
+                }
+            }
+            return selectedJob;
+        }
 
         public void ShowMainMenu()
         {
+            CreatePlayer();
+
+            player.Backpack.Add(potionItems[0]);
+            potionItems[0].Amount = 3;  // 소모품 전용 인벤토리 player.BackPack 에 회복 아이템 3개 추가
+
             string input = "";
             while (input != "0")
             {
@@ -68,9 +140,9 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                                                                                                                        
                                                                                                                        
                                                                                                                        ");                                          //시작할때 로고
-                Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
+                Console.WriteLine($"{player.Name} 님! 스파르타 마을에 오신 것을 환영합니다.");
                 Console.WriteLine("이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n");
-                Console.WriteLine("0. 게임종료");
+                Console.WriteLine("0. 게임 종료");
                 Console.WriteLine("1. 상태 보기");
                 Console.WriteLine("2. 인벤토리");
                 Console.WriteLine("3. 상점");
@@ -100,7 +172,7 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                         dungeon.ShowDungeon(player);
                         break;
                     case "5":
-                        rast.Rest(player);
+                        rest.GoRest(player);
                         break;
                     case "6":
                         Save Save = new Save();
@@ -117,9 +189,6 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                 }
             }
         }
-        Player player = new Player(); // 플레이어 객체 생성
-
-
     }
 }
 
