@@ -1,14 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TRPGTest
+﻿namespace Critical_hit
 {
-    internal class Dungeon
+    using global::TRPGTest;
+    using System;
+    using System.Collections.Generic;
+    using System.Numerics;
+    using System.Security.Cryptography.X509Certificates;
+    using static System.Net.Mime.MediaTypeNames;
+
+    namespace TRPGTest
     {
-        public class Monster
+        internal class Dungeon
         {
-            public string MonsterName { get; set; } // 몬스터 이름
-            public int MonsterLV { get; set; } // 몬스터 레벨
+            public class Monster
+            {
+                public string MonsterName { get; set; } // 몬스터 이름
+                public int MonsterLV { get; set; } // 몬스터 레벨
 
             public int MonsterHP { get; set; } // 몬스터 체력
             public int AttackMonster { get; set; } // 몬스터 공격력
@@ -79,11 +85,11 @@ namespace TRPGTest
                     break;
             }
 
-            Monster newMonster = new Monster();
-            newMonster.MonsterName = name;
-            newMonster.MonsterLV = level;
-            newMonster.MonsterHP = hp;
-            newMonster.AttackMonster = atk;
+                Monster newMonster = new Monster();
+                newMonster.MonsterName = name;
+                newMonster.MonsterLV = level;
+                newMonster.MonsterHP = hp;
+                newMonster.AttackMonster = atk;
 
             return newMonster;
 
@@ -93,12 +99,12 @@ namespace TRPGTest
             monsters = new List<Monster>(); // 몬스터 리스트 초기화
         }
 
-        public void ShowDungeon(Player player)
-        {
-            string input = "";
-            while (input != "0")
+            public void ShowDungeon(Player player)
             {
-                input = "";
+                string input = "";
+                while (input != "0")
+                {
+                    input = "";
 
                 Console.Clear();
                 if (player.HP <= 0) // HP가 0이하인 경우 게임 오버
@@ -120,11 +126,11 @@ namespace TRPGTest
             }
         }
 
-        // 전투 시작
-        public void StartBattle(Player player)
-        {
-            Console.Clear();
-            Console.WriteLine("**Battle!!**");
+            // 전투 시작
+            public void StartBattle(Player player)
+            {
+                Console.Clear();
+                Console.WriteLine("**Battle!!**");
 
             // 몬스터가 생성되지 않은 경우에만 몬스터 생성
             if (monsters.Count == 0)
@@ -306,11 +312,10 @@ namespace TRPGTest
                 Console.WriteLine("{0}. Lv.{1} {2}  HP {3}", i + 1, monsters[i].MonsterLV, monsters[i].MonsterName, monsters[i].MonsterHP);
             }
 
-            Console.WriteLine("\n원하시는 행동을 입력해주세요.");
-            Console.WriteLine("1. 공격");
-            Console.WriteLine("2. 다음 전투하기");
-            Console.WriteLine("0. 도망치기");
-            string input = Console.ReadLine();
+                Console.WriteLine("\n원하시는 행동을 입력해주세요.");
+                Console.WriteLine("1. 공격");
+                Console.WriteLine("0. 도망치기");
+                string input = Console.ReadLine();
 
             // 공격 선택
             if (input == "1")
@@ -342,43 +347,54 @@ namespace TRPGTest
             }
         }
 
-        // 몬스터 공격 메서드
-        public void AttackMonster(Player player, List<Monster> monsters)
-        {
-            // 몬스터 선택
-            Console.WriteLine("\n대상을 선택해주세요.");
-            int targetIndex;
-            if (!int.TryParse(Console.ReadLine(), out targetIndex) || targetIndex < 1 || targetIndex > monsters.Count)
+            // 몬스터 공격 메서드
+
+            public void AttackMonster(Player player, List<Monster> monsters)
             {
-                Console.WriteLine("잘못된 입력입니다.");
+               
+                // 몬스터 선택
+                Console.WriteLine("\n대상을 선택해주세요.");
+                int targetIndex;
+                if (!int.TryParse(Console.ReadLine(), out targetIndex) || targetIndex < 1 || targetIndex > monsters.Count)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                // 선택한 몬스터 인덱스 계산 (0부터 시작하는 인덱스로 변환)
+                int monsterIndex = targetIndex - 1;
+
+                // 선택한 몬스터가 이미 죽은 경우
+                if (monsters[monsterIndex].MonsterDie)
+                {
+                    Console.WriteLine("이미 죽은 몬스터를 공격할 수 없습니다.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                // 몬스터 공격
+                int faitalodds = rand.Next(1, 11);//치명타 확률
+                if(faitalodds > 3)
+                {
+                    Console.WriteLine("치명타 공격!");
+                    iscriticaldamage = CriticalHit(player.Attack);
+                    monster[monsterIndex].MonsterHp -= criticaldamage;
+                    Console.WriteLine("\tChad 의 공격!");
+                }
+                
+
+                // 공격 결과 출력
+                Console.WriteLine("\nChad 의 공격!");
+                Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, damage);
                 Console.ReadKey();
-                return;
-            }
 
-            // 선택한 몬스터 인덱스 계산 (0부터 시작하는 인덱스로 변환)
-            int monsterIndex = targetIndex - 1;
-
-            // 선택한 몬스터가 이미 죽은 경우
-            if (monsters[monsterIndex].MonsterDie)
-            {
-                Console.WriteLine("이미 죽은 몬스터를 공격할 수 없습니다.");
-                Console.ReadKey();
-                return;
-            }
-
-            // 몬스터 공격
-            int damage = CalculateDamage(player.Attack);
-            monsters[monsterIndex].MonsterHP -= damage;
-
-            // 공격 결과 출력
-            Console.WriteLine("\nChad 의 공격!");
-            Console.WriteLine("{0} 을(를) 맞췄습니다. [데미지 : {1}]", monsters[monsterIndex].MonsterName, damage);
-            Console.ReadKey();
-            // 몬스터가 죽은 경우
-            if (monsters[monsterIndex].MonsterHP <= 0)
-            {
-                monsters[monsterIndex].MonsterHP = 0; // HP가 0 아래로 내려가지 않도록 보정
-                monsters[monsterIndex].MonsterDie = true;
+             
+                    // 몬스터가 죽은 경우
+                    if (monsters[monsterIndex].MonsterHP <= 0)
+                {
+                    monsters[monsterIndex].MonsterHP = 0; // HP가 0 아래로 내려가지 않도록 보정
+                    monsters[monsterIndex].MonsterDie = true;
 
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[monsterIndex].MonsterName);
                 monsterDieCount--;
@@ -413,7 +429,14 @@ namespace TRPGTest
                 {
                     EnemyPhase(player, monsters);
                     monsterCount = 0;
+
+                    // 기존에 존재했던 몬스터들을 전부 제거
                     monsters.Clear();
+<<<<<<< HEAD
+
+                    // 다시 몬스터 스폰
+                    StartBattle(player);
+=======
                 }
             }
             else
@@ -430,7 +453,25 @@ namespace TRPGTest
             int finalDamage = (int)Math.Ceiling(attack * (1 + error)); // 최종 공격력 계산 (오차 적용)
             return finalDamage;
         }
+        // 치명타 공격 메서드
+        public int CriticalHit(int attack)
+        {
+            int critical = new Random().Next(1, 100);
+            float damage = 0;
+            bool isCritical = false;
+           if (critical <= 15)
 
+           {
+                isCritical = true;
+                double newCriticalattack = damage * 1.6;
+                damage = (int)Math.Round(newCriticalattack);
+            }
+            else
+            {
+                isCritical = false;
+            }
+            int criticaldamage = (int)damage;
+            return criticaldamage;
         // 적 몬스터 공격 페이즈
         // 플레이어의 방어력을 몬스터의 공격력에서 빼서 데미지를 계산하고, 음수가 되면 데미지가 없도록 설정
         public void EnemyPhase(Player player, List<Monster> monsters)
@@ -503,20 +544,69 @@ namespace TRPGTest
                 {
                     // 플레이어의 차례로 돌아가기
                     //ShowDungeon(player);
+>>>>>>> parent of 0b5dbb2 (Update Dungeon.cs)
                 }
                 else
                 {
-                    StartBattle(player);
-                    Console.ReadKey();
-                }
-            }
-        }
+                    //// 살아있는 몬스터에 대해 공격 수행
+                    foreach (var monster in monsters)
+                    {
+                        if (!monster.MonsterDie)
+                        {
+                            // 몬스터 공격력 계산
+                            int damage = CalculateDamage(monster.AttackMonster);
 
-        // 게임 오버 메서드
-        public void GameOver(Player player)
-        {
-            Console.Clear();
-            Console.WriteLine(@"  /$$$$$$                                           /$$$$$$                                      /$$       /$$
+                            // 플레이어 방어력을 고려하여 데미지 계산
+                            damage -= player.Defense;
+                            if (damage < 0)
+                            {
+                                damage = 0; // 음수인 경우 데미지가 없도록 설정
+                            }
+
+                            // 플레이어 체력 감소
+                            player.HP -= damage;
+
+                            // 공격 결과 출력
+                            Console.WriteLine("{0}의 공격!", monster.MonsterName);
+                            Console.WriteLine("Chad을(를) 공격하여 {0}만큼의 데미지를 입혔습니다.", damage);
+                            Console.WriteLine("Chad의 체력: {0}/{1}\n", player.HP, 100);
+
+                            // 플레이어가 죽은 경우
+                            if (player.HP <= 0)
+                            {
+                                Console.WriteLine("플레이어가 사망했습니다. 게임 오버!");
+                                GameOver(player);
+                                return;
+                            }
+                        }
+                    }
+
+                    // 다음 행동 선택
+                    Console.WriteLine("등을 보여 공격당했습니다.");
+                    Console.WriteLine("0. 도망치기");
+                    string input = Console.ReadLine();
+                    if (input == "0")
+                    {
+                        // 플레이어의 차례로 돌아가기
+                        //ShowDungeon(player);
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                        Console.ReadKey();
+                    }
+                    
+                }
+
+                
+            }
+
+
+            // 게임 오버 메서드
+            public void GameOver(Player player)
+            {
+                Console.Clear();
+                Console.WriteLine(@"  /$$$$$$                                           /$$$$$$                                      /$$       /$$
  /$$__  $$                                         /$$__  $$                                    | $$      | $$
 | $$  \__/  /$$$$$$  /$$$$$$/$$$$   /$$$$$$       | $$  \ $$ /$$    /$$ /$$$$$$   /$$$$$$       | $$      | $$
 | $$ /$$$$ |____  $$| $$_  $$_  $$ /$$__  $$      | $$  | $$|  $$  /$$//$$__  $$ /$$__  $$      | $$      | $$
