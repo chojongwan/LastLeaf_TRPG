@@ -13,13 +13,21 @@ namespace TRPGTest
         static Item[] shopItems = new Item[]
         {
         new Item("가죽 갑옷", "방어력 +5", "기본적인 방어력을 가진 갑옷입니다.", 1000, ItemType.Armor),
+
         new Item("무쇠갑옷", "방어력 +17", "무쇠로 만들어져 튼튼한 갑옷입니다.", 2000, ItemType.Armor),
+
         new Item("스파르타의 갑옷", "방어력 +30", "스파르타의 전사들이 사용했다는 전설등급 갑옷입니다.", 3500, ItemType.Armor),
+
         new Item("아테네의 갑옷", "방어력 +50", "올림푸스의 신 '아테네'가 사용했다는 신화등급 갑옷입니다.", 7000, ItemType.Armor),
+
         new Item("낡은 검", "공격력 +2", "쉽게 볼 수 있는 낡은 검입니다.", 600, ItemType.Weapon),
+
         new Item("청동 도끼", "공격력 +5", "어디선가 사용됐던거 같은 도끼입니다.", 1500, ItemType.Weapon),
+
         new Item("스파르타의 창", "공격력 +7", "스파르타의 전사들이 사용했다는 전설등급 창입니다.", 3500, ItemType.Weapon),
+
         new Item("헤라클래스의 몽둥이", "공격력 +15", "올림푸스의 신화적 전사 헤라클레스가 사용했다는 신화등급의 몽둥이입니다.", 7000, ItemType.Weapon),
+
         new Item("제우스의 아스트라페", "공격력 +50", "올림푸스 그 자체인 제우스가 사용했다는 고유무기 입니다.", 30000, ItemType.Weapon)
         };
         public void ShowShop(Player player)
