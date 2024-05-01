@@ -15,9 +15,10 @@ namespace TRPGTest
             public bool MonsterDie { get; set; } // 몬스터 생사구분
             public int MonsterCount { get; set; }
         }
-
+        public int monsterDieCount = 0;
         List<Monster> monsters; // 몬스터 리스트
         public Random rand = new Random();
+        //CreateBoss boss = new CreateBoss();
         public int monsterCount = 0;
         // 랜덤 몬스터 생성 메서드
         public Monster CreateRandomMonster()
@@ -31,24 +32,29 @@ namespace TRPGTest
             switch (level)
             {
                 case 2:
-                    name = "미니언";
+                    name = "세이렌";
                     hp = rand.Next(10, 21); // 10~20 사이의 랜덤한 체력
                     atk = rand.Next(3, 7); // 3~6 사이의 랜덤한 공격력
                     break;
                 case 3:
-                    name = "공허충";
+                    name = "켄타우로스";
                     hp = rand.Next(8, 16); // 8~15 사이의 랜덤한 체력
                     atk = rand.Next(6, 10); // 6~9 사이의 랜덤한 공격력
                     break;
                 case 4:
-                    name = "대포미니언";
+                    name = "키클롭스";
                     hp = rand.Next(20, 31); // 20~30 사이의 랜덤한 체력
                     atk = rand.Next(7, 12); // 7~11 사이의 랜덤한 공격력
                     break;
                 case 5:
-                    name = "슈퍼미니언";
+                    name = "기가스";
                     hp = rand.Next(25, 36); // 25~35 사이의 랜덤한 체력
                     atk = rand.Next(10, 16); // 10~15 사이의 랜덤한 공격력
+                    break;
+                case 6:
+                    name = "제우스";
+                    hp = rand.Next(300, 500);
+                    atk = rand.Next(100, 300);
                     break;
             }
 
@@ -80,7 +86,6 @@ namespace TRPGTest
                 }
                 Console.WriteLine("던전");
                 Console.WriteLine("전투로 골드를 얻을 수 있는 던전입니다.\n");
-                Console.WriteLine("요구능력치 : 방어력, 공격력 : 전리품 증가");
                 Console.WriteLine($"[현재 HP] {player.HP} \n");
                 Console.WriteLine($"[현재 Gold] {player.Gold}G \n");
                 Console.WriteLine("1. 전투 시작");
@@ -106,18 +111,21 @@ namespace TRPGTest
                 monsterCount = rand.Next(1, 5); // 1~4 사이의 랜덤한 몬스터 수
 
                 Console.WriteLine("총 {0}마리의 몬스터가 등장했습니다.\n", monsterCount);
-
                 // 랜덤 몬스터 생성
                 for (int i = 0; i < monsterCount; i++)
                 {
                     monsters.Add(CreateRandomMonster());
+                    monsterDieCount++;
                 }
+
             }
 
             // 플레이어 정보 출력
             Console.WriteLine("[내정보]");
             Console.WriteLine("Lv.{0} {1} ({2})", player.LV, player.Name, player.Job);
             Console.WriteLine("HP: {0}/{1}\n", player.HP, 100);
+            Console.WriteLine($"[현재 Gold] {player.Gold}G \n");
+
 
             // 몬스터 정보 출력
             Console.WriteLine("[몬스터]");
@@ -140,7 +148,7 @@ namespace TRPGTest
             }
             else if (input == "2")
             {
-                if (monsterCount == 0)
+                if (monsterDieCount == 0)
                 {
                     EnemyPhase(player, monsters);
                 }
@@ -202,6 +210,7 @@ namespace TRPGTest
                 monsters[monsterIndex].MonsterDie = true;
 
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[monsterIndex].MonsterName);
+                monsterDieCount--;
                 player.DungeonClearCount++;
                 if ((player.DungeonClearCount / 4) >= player.LV)  //레벨 오르는 부분
                 {
@@ -210,8 +219,12 @@ namespace TRPGTest
                     player.Defense += 2; // 방어력 증가
                     Console.WriteLine($"레벨이 올랐습니다. 현재 레벨: {player.LV}, 공격력: {player.Attack}, 방어력: {player.Defense}");
                 }
-
+                Console.WriteLine("몬스터를 처치하여 소량의 골드를 얻었습니다.");
+                int gold = rand.Next(100, 1001);
+                Console.WriteLine($"골드를 {gold}G 얻었습니다!");
+                player.Gold += gold;
                 Console.ReadKey();
+
                 StartBattle(player);
                 // 모든 몬스터가 죽었는지 확인
                 bool allMonstersDead = true;
