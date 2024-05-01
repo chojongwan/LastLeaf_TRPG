@@ -13,8 +13,8 @@ namespace TRPGTest
         public int LV { get; set; } = 1;
         public string Name { get; set; } = "";
         public string Job { get; set; } = "";
-        public int Attack { get; set; } = 10;
-        public int Defense { get; set; } = 10;
+        public int Attack { get; set; } = 5;
+        public int Defense { get; set; } = 5;
         public int HP { get; set; } = 100;
         public int DungeonClearCount { get; set; } = 0;     //던전클리어 카운트에 따른 레벨 변화
         public List<Item> Inventory { get; } = new List<Item>(); // 인벤토리 리스트
