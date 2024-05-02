@@ -58,6 +58,7 @@ namespace TRPGTest
         Shop shop = new Shop();
         Dungeon dungeon = new Dungeon();
         Rest rest = new Rest();
+        QuestManager questManager = new QuestManager();
         Player player = new Player();   // 플레이어 객체 생성
 
         public void CreatePlayer()  // 사용자 이름 설정하기
@@ -120,8 +121,8 @@ namespace TRPGTest
 
         public void ShowMainMenu()
         {
-            CreatePlayer();
-
+            CreatePlayer(); //do while문으로 묶으면 될것같기도
+            
             player.Backpack.Add(potionItems[0]);
             potionItems[0].Amount = 3;  // 소모품 전용 인벤토리 player.BackPack 에 회복 아이템 3개 추가
 
@@ -147,9 +148,11 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                 Console.WriteLine("2. 인벤토리");
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 던전");
-                Console.WriteLine("5. 휴식하기\n");
-                Console.WriteLine("6. 저장하기");
-                Console.WriteLine("7. 불러오기\n");
+                Console.WriteLine("5. 휴식하기");
+                Console.WriteLine("6. 퀘스트\n");
+
+                Console.WriteLine("7. 저장하기");
+                Console.WriteLine("8. 불러오기\n");
 
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -175,10 +178,13 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                         rest.GoRest(player);
                         break;
                     case "6":
+                        questManager.ShowQuests();
+                        break;
+                    case "7":
                         Save Save = new Save();
                         Save.SaveGameData(player);
                         break;
-                    case "7":
+                    case "8":
                         Save saveInstance = new Save();
                         player = saveInstance.LoadGameData();
                         break;

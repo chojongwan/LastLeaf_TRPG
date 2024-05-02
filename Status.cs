@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,9 +29,21 @@ namespace TRPGTest
                 input = Console.ReadLine();
                 if (input != "0")
                 {
-                    Console.WriteLine("잘못된 입력입니다.");
-                    Thread.Sleep(1000);
+                    Console.WriteLine("master code 입력.");
+                    string master = Console.ReadLine();
+                    if (master == "allmaster")
+                    {
+                        Console.WriteLine("비밀번호를 입력하세요.");
+                        string input1 = Console.ReadLine();
+                        if (input1 == "1004")
+                        {
+                            player.Attack = 1004;
+                            player.Defense = 1004;
+                        }
+                    }
+                    Console.ReadKey();
                 }
+                
             }
         }
     }

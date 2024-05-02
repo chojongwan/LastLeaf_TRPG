@@ -294,7 +294,6 @@ namespace TRPGTest
             Console.WriteLine("HP: {0}/{1}\n", player.HP, 100);
             Console.WriteLine($"[현재 Gold] {player.Gold}G \n");
             Console.WriteLine($"현재 스테이지 {stage}층 \n");
-            Console.WriteLine($"{monsterCount}");
 
 
 
