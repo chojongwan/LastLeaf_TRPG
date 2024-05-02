@@ -15,6 +15,7 @@ namespace TRPGTest
             public int Goal { get; set; } // 퀘스트 목표
             public int Progress { get; set; } // 퀘스트 진행 상황
             public bool IsComplete => Progress >= Goal; // 퀘스트 완료 여부
+            public bool IsAccepted { get; set; } // 퀘스트 수락 여부
 
             // 생성자
             public Quest(string name, string description, int id, int goal)
@@ -24,6 +25,7 @@ namespace TRPGTest
                 ID = id;
                 Goal = goal;
                 Progress = 0;
+                IsAccepted = false; // 처음에는 수락되지 않은 상태로 초기화
             }
         }
 
@@ -52,6 +54,17 @@ namespace TRPGTest
             Console.Clear();
             Console.WriteLine("**Quest!!**\n");
 
+            // 수락한 퀘스트와 진행 상황 표시
+            Console.WriteLine("수락한 퀘스트 목록:");
+            foreach (var quest in quests)
+            {
+                if (quest.IsAccepted)
+                {
+                    Console.WriteLine($"{quest.Name}: {quest.Progress}/{quest.Goal}");
+                }
+            }
+
+            Console.WriteLine("\n전체 퀘스트 목록:");
             // 퀘스트 목록 출력
             for (int i = 0; i < quests.Count; i++)
             {
@@ -74,6 +87,7 @@ namespace TRPGTest
                 Console.ReadKey();
             }
         }
+
 
         // 선택한 퀘스트의 상세 정보 표시
         private void ShowQuestDetails(int index)
@@ -117,6 +131,7 @@ namespace TRPGTest
         private void AcceptQuest(int index)
         {
             Console.WriteLine($"퀘스트 '{quests[index].Name}'를 수락하셨습니다.");
+            // 여기에 퀘스트 수락 시 추가적으로 해야 할 작업을 추가할 수 있습니다.
             Console.ReadKey();
         }
 
@@ -131,12 +146,21 @@ namespace TRPGTest
                     quest.Progress++; // 진행 상황을 증가시킵니다.
                     if (quest.IsComplete)
                     {
-                        Console.WriteLine("퀘스트 '마을을 위협하는 미니언 처치'를 완료하셨습니다!");
+                        Console.WriteLine($"퀘스트 '{quest.Name}'를 완료하셨습니다!");
                         Console.WriteLine("보상을 받으세요!");
-                        // 퀘스트 보상을 주는 로직을 추가할 수 있습니다.
+                        // 여기에 퀘스트 보상을 주는 로직을 추가할 수 있습니다.
+                        GiveQuestReward(); // 퀘스트 보상 주는 메서드 호출
                     }
                 }
             }
+        }
+
+        // 퀘스트 보상 주는 메서드
+        private void GiveQuestReward()
+        {
+            // 퀘스트 완료 시 보상을 주는 로직을 작성합니다.
+            // 여기에 플레이어 객체가 있다고 가정하고 보상을 플레이어에게 주는 등의 작업을 수행합니다.
+            // 예를 들어, 플레이어에게 경험치나 게임 머니를 주는 등의 작업을 수행합니다.
         }
     }
 }
