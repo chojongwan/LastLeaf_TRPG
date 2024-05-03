@@ -118,6 +118,7 @@ namespace TRPGTest
                     StartBattle(player); // 전투 시작
                 else
                     Console.WriteLine("잘못된 입력입니다.");
+
             }
         }
 
@@ -359,7 +360,7 @@ namespace TRPGTest
             {
                 Console.WriteLine("잘못된 입력입니다.");
                 Console.ReadKey();
-                return;
+                StartBattle(player);
             }
 
             // 선택한 몬스터 인덱스 계산 (0부터 시작하는 인덱스로 변환)
@@ -489,6 +490,10 @@ namespace TRPGTest
             {
                 DoubleStrike(player, monsters);
                 player.MP -= 15;
+            }
+            else
+            {
+                StartBattle(player);
             }
         }
         public void AlphaStrike(Player player, List<Monster> monsters)
