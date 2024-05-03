@@ -18,6 +18,7 @@ namespace TRPGTest
         public int Attack { get; set; } = 5;
         public int Defense { get; set; } = 5;
         public int HP { get; set; } = 100;
+        public int MP { get; set; } = 50;
         public int DungeonClearCount { get; set; } = 0;     // 던전 클리어 카운트에 따른 레벨 변화
         public List<Item> Inventory { get; } = new List<Item>(); // 장비 인벤토리 리스트
         public List<Item> Backpack { get; } = new List<Item>(); // 소모품 인벤토리 리스트

@@ -22,6 +22,7 @@ namespace TRPGTest
                 Console.WriteLine($"공격력: {player.Attack}");
                 Console.WriteLine($"방여력: {player.Defense}");
                 Console.WriteLine($"체력: {player.HP}");
+                Console.WriteLine($"마력: {player.MP}");
                 Console.WriteLine($"Gold: {player.Gold} G\n");
                 Console.WriteLine("0. 나가기\n");
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
