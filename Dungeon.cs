@@ -356,7 +356,13 @@ namespace TRPGTest
 
             // 선택한 몬스터 인덱스 계산 (0부터 시작하는 인덱스로 변환)
             int monsterIndex = targetIndex - 1;
-
+            // 선택한 몬스터가 이미 죽은 경우
+            if (monsters[monsterIndex].MonsterDie)
+            {
+                Console.WriteLine("이미 죽은 몬스터를 공격할 수 없습니다.");
+                Console.ReadKey();
+                return;
+            }
             // 몬스터 공격 if문으로 치명타를 설정가능
             int criticalprobability = rand.Next(1, 11);//치명타 확률
             if (criticalprobability > 7)
