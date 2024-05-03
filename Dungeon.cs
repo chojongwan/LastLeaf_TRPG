@@ -402,7 +402,7 @@ namespace TRPGTest
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[monsterIndex].MonsterName);
                 monsterDieCount--;
                 player.DungeonClearCount++;
-                if ((player.DungeonClearCount / 4) >= player.LV)  //레벨 오르는 부분
+                if ((player.DungeonClearCount / 5) >= player.LV)  //레벨 오르는 부분
                 {
                     player.LV++;
                     player.Attack += 1; // 공격력 증가
@@ -414,7 +414,7 @@ namespace TRPGTest
                 Console.WriteLine($"골드를 {gold}G 얻었습니다!");
                 player.Gold += gold;
                 QuestManager quest = new QuestManager();
-                quest.MonsterDies();
+                quest.MonsterDies(player);
                 Console.ReadKey();
 
                 StartBattle(player);
@@ -512,7 +512,7 @@ namespace TRPGTest
                 Console.WriteLine("{0}이(가) 사망했습니다.", monsters[select].MonsterName);
                 monsterDieCount--;
                 player.DungeonClearCount++;
-                if ((player.DungeonClearCount / 4) >= player.LV)  //레벨 오르는 부분
+                if ((player.DungeonClearCount / 5) >= player.LV)  //레벨 오르는 부분
                 {
                     player.LV++;
                     player.Attack += 1; // 공격력 증가
@@ -524,7 +524,7 @@ namespace TRPGTest
                 Console.WriteLine($"골드를 {gold}G 얻었습니다!");
                 player.Gold += gold;
                 QuestManager quest = new QuestManager();
-                quest.MonsterDies();
+                quest.MonsterDies(player);
             }
             Console.ReadKey();
             EnemyPhase(player, monsters);
@@ -551,7 +551,7 @@ namespace TRPGTest
                     monsterDieCount--;
                     SmonsterCount--;
                     player.DungeonClearCount++;
-                    if ((player.DungeonClearCount / 4) >= player.LV)  //레벨 오르는 부분
+                    if ((player.DungeonClearCount / 5) >= player.LV)  //레벨 오르는 부분
                     {
                         player.LV++;
                         player.Attack += 1; // 공격력 증가
@@ -563,7 +563,7 @@ namespace TRPGTest
                     Console.WriteLine($"골드를 {gold}G 얻었습니다!");
                     player.Gold += gold;
                     QuestManager quest = new QuestManager();
-                    quest.MonsterDies();
+                    quest.MonsterDies(player);
                 }
             }
 

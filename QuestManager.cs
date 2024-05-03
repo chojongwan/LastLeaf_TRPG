@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using static TRPGTest.QuestManager;
 
 namespace TRPGTest
 {
@@ -14,7 +16,7 @@ namespace TRPGTest
             public int ID { get; set; } // 퀘스트 ID
             public int Goal { get; set; } // 퀘스트 목표
             public int Progress { get; set; } // 퀘스트 진행 상황
-            public bool IsComplete => Progress >= Goal; // 퀘스트 완료 여부
+            public bool IsComplete { get; set; } // 퀘스트 완료 여부 진행 상황(Progress)이 목표량(Goal) 
             public bool IsAccepted { get; set; } // 퀘스트 수락 여부
 
             // 생성자
@@ -30,7 +32,7 @@ namespace TRPGTest
         }
 
         private List<Quest> quests = new List<Quest>(); // 퀘스트 목록
-
+        public Random rand = new Random();
         // 생성자
         public QuestManager()
         {
@@ -72,6 +74,8 @@ namespace TRPGTest
             }
 
             Console.WriteLine("\n원하시는 퀘스트를 선택해주세요.");
+            Console.WriteLine("0. 뒤로가기");
+
             string input = Console.ReadLine();
 
             int questIndex;
@@ -82,9 +86,7 @@ namespace TRPGTest
             }
             else
             {
-                Console.WriteLine("잘못된 입력입니다.");
-                Console.WriteLine("Press any key to return to the main menu...");
-                Console.ReadKey();
+                //ShowQuests();
             }
         }
 
@@ -116,12 +118,14 @@ namespace TRPGTest
                 case "1":
                     // 퀘스트 수락
                     AcceptQuest(index);
+                    ShowQuests();
                     break;
                 case "2":
                     // 메인 메뉴로 돌아가기
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다.");
+                    ShowQuestDetails(index);
                     Console.ReadKey();
                     break;
             }
@@ -131,36 +135,45 @@ namespace TRPGTest
         private void AcceptQuest(int index)
         {
             Console.WriteLine($"퀘스트 '{quests[index].Name}'를 수락하셨습니다.");
+            quests[index].IsAccepted = true;
             // 여기에 퀘스트 수락 시 추가적으로 해야 할 작업을 추가할 수 있습니다.
             Console.ReadKey();
         }
 
         // 몬스터가 죽을 때 호출되는 메서드
-        public void MonsterDies()
+        public void MonsterDies(Player player)
         {
-            // 퀘스트 목록 중에서 마을을 위협하는 미니언 처치 퀘스트를 찾아서 진행 상황을 업데이트합니다.
             foreach (var quest in quests)
             {
                 if (quest.ID == 1) // 마을을 위협하는 미니언 처치 퀘스트의 ID가 1이라고 가정합니다.
                 {
-                    quest.Progress++; // 진행 상황을 증가시킵니다.
-                    if (quest.IsComplete)
+                    quest.Progress = player.DungeonClearCount;
+                    //quest.Progress++; // 퀘스트 진행 상황을 증가시킵니다.
+                    if (player.DungeonClearCount == quest.Goal) // 퀘스트의 진행 상황이 목표량에 도달하면
                     {
+                        quest.IsAccepted = true; // 퀘스트를 수락한 것으로 표시합니다.
                         Console.WriteLine($"퀘스트 '{quest.Name}'를 완료하셨습니다!");
                         Console.WriteLine("보상을 받으세요!");
-                        // 여기에 퀘스트 보상을 주는 로직을 추가할 수 있습니다.
-                        GiveQuestReward(); // 퀘스트 보상 주는 메서드 호출
+                        GiveQuestReward(); // 퀘스트 보상을 주는 메서드를 호출합니다.
+                        Console.ReadKey();
                     }
                 }
             }
         }
 
+
         // 퀘스트 보상 주는 메서드
         private void GiveQuestReward()
         {
-            // 퀘스트 완료 시 보상을 주는 로직을 작성합니다.
-            // 여기에 플레이어 객체가 있다고 가정하고 보상을 플레이어에게 주는 등의 작업을 수행합니다.
-            // 예를 들어, 플레이어에게 경험치나 게임 머니를 주는 등의 작업을 수행합니다.
+            Player player = new Player();
+            int gold = rand.Next(500, 1501);
+            Console.WriteLine($"골드를 {gold}G 얻었습니다!");
+            Console.WriteLine($"레벨이 1 올랐습니다!");
+            player.Gold += gold;
+            player.LV++;
+            player.Attack += 1; // 공격력 증가
+            player.Defense += 2; // 방어력 증가
+            Console.ReadKey();
         }
     }
 }
