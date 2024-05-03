@@ -61,35 +61,32 @@ namespace TRPGTest
         QuestManager questManager = new QuestManager();
         Player player = new Player();   // 플레이어 객체 생성
 
-        public void CreatePlayer()  // 사용자 이름 설정하기
+        public void CreatePlayer()  // 사용자 이름 설정
         {
             Console.Clear();
             Console.WriteLine("환영합니다! 캐릭터를 생성해주세요.");
             Console.WriteLine("캐릭터 이름을 입력해주세요.");
             Console.Write("> ");
-            string playerName = Console.ReadLine();
-            while (playerName == "")
+            player.Name = Console.ReadLine();
+            while (player.Name == "")
             {
                 Console.Write("이름은 비워둘 수 없습니다. 다시 입력해주세요.\n> ");
-                playerName = Console.ReadLine();
+                player.Name = Console.ReadLine();
             }
-            Console.WriteLine($"환영합니다, {playerName} 님!");
-            player.Name = playerName;
 
-            string job = chooseJob();
-            player.Job = job;
+            chooseJob();
         }
 
-        public string chooseJob()   //직업 선택하기
+        public void chooseJob()   // 직업 선택
         {
             string input = "";
-            string selectedJob = "";
 
             Console.Clear();
+            Console.WriteLine($"환영합니다, {player.Name} 님!");
             Console.WriteLine("직업을 선택해주세요.\n");
-            Console.WriteLine("1. 전사");
-            Console.WriteLine("2. 궁수");
-            Console.WriteLine("3. 마법사\n");
+            Console.WriteLine("1. 전사 | 기본 공격력 4, 방어력 6");
+            Console.WriteLine("2. 궁수 | 기본 공격력 5, 방어력 5");
+            Console.WriteLine("3. 마법사 | 기본 공격력 6, 방어력 4\n");
 
             while (input != "1" && input != "2" && input != "3")
             {
@@ -101,34 +98,41 @@ namespace TRPGTest
                 {
                     case "1":
                         Console.WriteLine("전사를 선택하셨습니다.");
-                        selectedJob = "전사";
+                        player.Job = "전사";
+                        player.Attack = 4;
+                        player.Defense = 6;
                         break;
                     case "2":
                         Console.WriteLine("궁수를 선택하셨습니다.");
-                        selectedJob = "궁수";
+                        player.Job = "궁수";
+                        player.Attack = 5;
+                        player.Defense = 5;
                         break;
                     case "3":
                         Console.WriteLine("마법사를 선택하셨습니다.");
-                        selectedJob = "마법사";
+                        player.Job = "마법사";
+                        player.Attack = 6;
+                        player.Defense = 4;
                         break;
                     default:
                         Console.WriteLine("잘못된 입력입니다.");
                         break;
                 }
             }
-            return selectedJob;
         }
 
         public void ShowMainMenu()
         {
-            CreatePlayer(); //do while문으로 묶으면 될것같기도
+            CreatePlayer();
             
             player.Backpack.Add(potionItems[0]);
             potionItems[0].Amount = 3;  // 소모품 전용 인벤토리 player.BackPack 에 회복 아이템 3개 추가
 
             string input = "";
+
             while (input != "0")
             {
+                input = "";
                 Console.Clear();
                 Console.WriteLine(@" $$$$$$\                                           $$$$$$\    $$\                          $$\           $$\       $$\ 
 $$  __$$\                                         $$  __$$\   $$ |                         $$ |          $$ |      $$ |
@@ -154,44 +158,47 @@ $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   ____|      $$\   $$ |  $$ |$$\ $$  __$$ |
                 Console.WriteLine("7. 저장하기");
                 Console.WriteLine("8. 불러오기\n");
 
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-                input = Console.ReadLine();
-                switch (input)
+                while (input != "0" && input != "1" && input != "2" && input != "3" && input != "4" &&
+                    input != "5" && input != "6" && input != "7" && input != "8")
                 {
-                    case "0":
-                        Environment.Exit(0); // 프로그램 종료
-                        break;
-                    case "1":
-                        showStatus.ShowStatus(player);
-                        break;
-                    case "2":
-                        inventory.ShowInventory(player);
-                        break;
-                    case "3":
-                        shop.ShowShop(player);
-                        break;
-                    case "4":
-                        dungeon.ShowDungeon(player);
-                        break;
-                    case "5":
-                        rest.GoRest(player);
-                        break;
-                    case "6":
-                        questManager.ShowQuests();
-                        break;
-                    case "7":
-                        Save Save = new Save();
-                        Save.SaveGameData(player);
-                        break;
-                    case "8":
-                        Save saveInstance = new Save();
-                        player = saveInstance.LoadGameData();
-                        break;
-                    default:
-                        Console.WriteLine("잘못된 입력입니다.");
-                        ShowMainMenu();
-                        break;
+                    Console.Write("원하시는 행동을 입력해주세요.\n> ");
+                    input = Console.ReadLine();
+
+                    switch (input)
+                    {
+                        case "0":
+                            Environment.Exit(0);  // 프로그램 종료
+                            break;
+                        case "1":
+                            showStatus.ShowStatus(player);
+                            break;
+                        case "2":
+                            inventory.ShowInventory(player);
+                            break;
+                        case "3":
+                            shop.ShowShop(player);
+                            break;
+                        case "4":
+                            dungeon.ShowDungeon(player);
+                            break;
+                        case "5":
+                            rest.GoRest(player);
+                            break;
+                        case "6":
+                            questManager.ShowQuests();
+                            break;
+                        case "7":
+                            Save Save = new Save();
+                            Save.SaveGameData(player);
+                            break;
+                        case "8":
+                            Save saveInstance = new Save();
+                            player = saveInstance.LoadGameData();
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            break;
+                    }
                 }
             }
         }
